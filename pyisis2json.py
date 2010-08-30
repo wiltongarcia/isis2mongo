@@ -5,6 +5,15 @@ from pyisis.files import MasterFile
 from pyisis.records import MasterRecord
 from pyisis.fields import MasterField
 from pyisis.fields import MasterContainerField
+from pyisis.engine import Engine
+import pyisis
+
+"""
+
+Original source code Luciano Ramalho for the Bireme in:
+http://reddes.bvsalud.org/projects/isisnbp/browser/tools
+
+"""
 
 SKIP_INACTIVE = True
 DEFAULT_QTY = sys.maxint
@@ -13,7 +22,10 @@ ISIS_ACTIVE_KEY = 'active'
 master_file_name = 'isis%scds.mst'%os.sep
 
 def iterRecords(master_file_name):
-    mst = MasterFile(master_file_name)
+    config = pyisis.config.config
+    config.load("isis/cds.ini")
+    Engine.setup(config)
+    mst = MasterFile(master_file_name, config=config)
     for record in mst:
         fields = {}
         if SKIP_INACTIVE and (record.status != 0): 
